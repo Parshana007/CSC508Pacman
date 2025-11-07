@@ -1,6 +1,7 @@
 
 
-import java.util.ArrayList;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -14,31 +15,36 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  * @author ..
  * @version 1.0
  */
-public class MQTTPublisher implements Runnable{
+public class MQTTPublisher implements PropertyChangeListener{
     private final static String BROKER = "tcp://test.mosquitto.org:1883";
 	private final static String TOPIC = "csc509/multiverse/username/";
 	private final static String CLIENT_ID = "jgs-publisher";
-	
-	@Override
-	public void run() {
+
+	private MqttClient client;
+
+	public MQTTPublisher() {
 		try {
-			MqttClient client = new MqttClient(BROKER, CLIENT_ID);
-			client.connect();
-			System.out.println("Connected to BROKER: " + BROKER);
-			while (true) {
-				ArrayList<Square> squarePositions = Blackboard.getInstance().getSquarePositions();
-                if (!squarePositions.isEmpty()) {
-                    String content = "Squares: " + Blackboard.getInstance().getSquarePositions();
-                
-					MqttMessage message = new MqttMessage(content.getBytes());
-					message.setQos(2);
-					if (client.isConnected())
-						client.publish(TOPIC, message);
-					System.out.println("Message published: " + content);
-				}
-				Thread.sleep(5000);
+			client = new MqttClient(BROKER, CLIENT_ID);
+		} catch (MqttException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		try {
+			Square mySquare = Blackboard.getInstance().getMySquare();
+
+			String content = mySquare.getId() + "," + mySquare.getX() + "," + mySquare.getY() + "," + mySquare.getColor().getRed() + "," + mySquare.getColor().getGreen() + "," + mySquare.getColor().getBlue();
+
+			MqttMessage message = new MqttMessage(content.getBytes());
+			message.setQos(2);
+			if (client.isConnected()) {
+				client.publish(TOPIC, message);
+				System.out.println("Publisher sending message");
 			}
-		} catch (MqttException | InterruptedException e) {
+
+		} catch (MqttException e) {
 			e.printStackTrace();
 		}
 	}
