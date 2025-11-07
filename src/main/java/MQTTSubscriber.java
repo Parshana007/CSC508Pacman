@@ -50,16 +50,40 @@ public class MQTTSubscriber implements Runnable, MqttCallback {
 	@Override
 	public void messageArrived(String s, MqttMessage mqttMessage) {
         String payload = new String(mqttMessage.getPayload());
-		System.out.println("Positions of Squares arrived. Topic: " + s +
+		System.out.println("Positions of Square arrived. Topic: " + s +
 			" Message: " + payload);
+        
+		// payload ex: id,100,200,RED
 
-        Blackboard.getInstance().addSquareFromPayload(payload);
+		String[] squareDetails = payload.split(",");
+
+		// check if payload is correct length
+		if (squareDetails.length != 4) {
+			System.err.println("Invalid payload format: " + payload);
+			return;
+		}
+
+		// try adding new payload to Blackboard
+		try {
+			String id = squareDetails[0]
+			int x = Integer.parseInt(squareDetails[1]);
+			int y = Integer.parseInt(squareDetails[2]);
+			String colorName = squareDetails[3].trim();
+
+			// try converting String colocName to Color object
+			Color color;
+			try {
+				color = (Color) Color.class.getField(colorName.toUpperCase()).get(null);
+			} catch (Exception e) {
+				System.err.println("Unknown color: " + colorName);
+				return;
+			}
+
+			Square square = new Square(x, y, id, color);
+			Blackboard.getInstance().addSquare(square);
+
+		}
+		catch (Exception e) {
+			System.err.println("Error parsing coordinates from payload: " + payload);
+		}
 	}
-	
-	@Override
-	public void connectionLost(Throwable throwable) {}
-	
-	@Override
-	public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {}
-
-}
