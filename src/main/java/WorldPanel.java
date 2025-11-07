@@ -11,8 +11,9 @@ public class WorldPanel extends JPanel implements KeyListener, PropertyChangeLis
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
         drawGrid(g);
+        drawSquares(g);
     }
 
     private void drawGrid(Graphics g) {
@@ -21,6 +22,12 @@ public class WorldPanel extends JPanel implements KeyListener, PropertyChangeLis
         }
         for (int x = 0; x < getWidth(); x++) {
             g.drawLine(x, 0, x, getHeight());
+        }
+    }
+
+    private void drawSquares(Graphics g) {
+        for (Square square : Blackboard.getInstance().getSquarePositions().values()) {
+            square.draw(g);
         }
     }
 

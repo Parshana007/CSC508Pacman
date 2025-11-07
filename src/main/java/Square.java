@@ -37,6 +37,11 @@ public class Square {
         this.color = color;
     }
 
+    public void draw(Graphics g) {
+        g.setColor(color);
+        g.drawRect(x,y,1,1);
+    }
+
     public String getId() {
         return id;
     }
