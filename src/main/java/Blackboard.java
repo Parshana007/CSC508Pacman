@@ -79,7 +79,7 @@ public class Blackboard extends PropertyChangeSupport{
 
 
     public Square addSquare(Square square) {
-        squarePositions.put(square.id, square);
+        squarePositions.put(square.getId(), square);
         this.mySquare = square;
         logger.info("square added");
         propertyChangeSupport.firePropertyChange("addedSquare", "", squarePositions);
@@ -92,7 +92,7 @@ public class Blackboard extends PropertyChangeSupport{
 
     public void up() {
         // Find the square --> subtract one to y
-        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() - 1, mySquare.getID(), mySquare.getColor());
+        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() - 1, mySquare.getId(), mySquare.getColor());
 
         squarePositions.put(mySquareId, mySquareUpdate);
         this.mySquare = mySquareUpdate;
@@ -100,7 +100,7 @@ public class Blackboard extends PropertyChangeSupport{
 
     public void down() {
         // Find the square --> add one to y
-        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() + 1, mySquare.getID(), mySquare.getColor());
+        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() + 1, mySquare.getId(), mySquare.getColor());
 
         squarePositions.put(mySquareId, mySquareUpdate);
         this.mySquare = mySquareUpdate;    
@@ -108,7 +108,7 @@ public class Blackboard extends PropertyChangeSupport{
 
     public void left() {
         // Find the square --> subtract one to x
-        Square mySquareUpdate = new Square(mySquare.getX() - 1, mySquare.getY(), mySquare.getID(), mySquare.getColor());
+        Square mySquareUpdate = new Square(mySquare.getX() - 1, mySquare.getY(), mySquare.getId(), mySquare.getColor());
 
         squarePositions.put(mySquareId, mySquareUpdate);
         this.mySquare = mySquareUpdate;    
@@ -116,7 +116,7 @@ public class Blackboard extends PropertyChangeSupport{
 
     public void right() {
         // Find the square --> add one to x
-        Square mySquareUpdate = new Square(mySquare.getX() + 1, mySquare.getY(), mySquare.getID(), mySquare.getColor());
+        Square mySquareUpdate = new Square(mySquare.getX() + 1, mySquare.getY(), mySquare.getId(), mySquare.getColor());
 
         squarePositions.put(mySquareId, mySquareUpdate);
         this.mySquare = mySquareUpdate;
