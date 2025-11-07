@@ -69,7 +69,7 @@ public class MQTTSubscriber implements Runnable, MqttCallback {
 
 		// try adding new payload to Blackboard
 		try {
-			String id = squareDetails[0]
+			String id = squareDetails[0];
 			int x = Integer.parseInt(squareDetails[1]);
 			int y = Integer.parseInt(squareDetails[2]);
 			String colorName = squareDetails[3].trim();
