@@ -1,7 +1,9 @@
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,14 +14,16 @@ import org.slf4j.LoggerFactory;
 public class Blackboard extends PropertyChangeSupport{
     private static Blackboard instance;
     private final PropertyChangeSupport propertyChangeSupport;
-    private final List<Square> squarePositions;
+    private final Map<String, Square> squarePositions;
+    private String mySquareId;
+    private Square mySquare;
     
     private static final Logger logger = LoggerFactory.getLogger(Blackboard.class);
 
     private Blackboard() {
         super(new Object());  
         this.propertyChangeSupport = new PropertyChangeSupport(this);
-        this.squarePositions = new ArrayList<>();
+        this.squarePositions = new HashMap<String, Square>();
     }
 
     public static synchronized Blackboard getInstance() {
@@ -37,25 +41,84 @@ public class Blackboard extends PropertyChangeSupport{
         this.propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
-    // Something that adds a position to blackboard: location i.e. x, y, color 
-    public synchronized void addSquare(Square square) {
-        List<Square> oldValue = new ArrayList<>(squarePositions);
-        squarePositions.add(square);
+    public void setMySquareId(String squareId) {
+        this.mySquareId = squareId;
+    }
+
+    public String getMySquareId() {
+        return this.mySquareId;
+    }
+
+    public void setMySquare(Square square) {
+        this.mySquare = square;
+    }
+
+    public Square getMySquare() {
+        return this.mySquare;
+    }
+
+    public Square getMyIDSquare() {
+        Square currentSquare = null;
+
+        for (Map.Entry<String,Square> entry : squarePositions.entrySet()) {
+            String key = entry.getKey();
+            if (key.equals(mySquareId)) {
+                currentSquare = (Square) entry.getValue();
+            }
+        }
+        return currentSquare;
+    }
+
+    public Square findSquare(Square square) {
+        Square existingSquare = getMyIDSquare();
+        if (existingSquare != null) {
+            return existingSquare;
+        }
+        return null;
+    }
+
+
+    public Square addSquare(Square square) {
+        squarePositions.put(square.id, square);
+        this.mySquare = square;
         logger.info("square added");
-        propertyChangeSupport.firePropertyChange("clickPositions", oldValue, squarePositions);
+        propertyChangeSupport.firePropertyChange("addedSquare", "", squarePositions);
+        return square;
     }
 
-    // Something to update the location of the square??
-
-    public synchronized ArrayList<Square> getSquarePositions() {
-        return new ArrayList<>(squarePositions);
+    public synchronized Map<String, Square> getSquarePositions() {
+        return squarePositions;
     }
 
-    public void up() {}
+    public void up() {
+        // Find the square --> subtract one to y
+        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() - 1, mySquare.getID(), mySquare.getColor());
 
-    public void down() {}
+        squarePositions.put(mySquareId, mySquareUpdate);
+        this.mySquare = mySquareUpdate;
+    }
 
-    public void left() {}
+    public void down() {
+        // Find the square --> add one to y
+        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() + 1, mySquare.getID(), mySquare.getColor());
 
-    public void right() {}
+        squarePositions.put(mySquareId, mySquareUpdate);
+        this.mySquare = mySquareUpdate;    
+    }
+
+    public void left() {
+        // Find the square --> subtract one to x
+        Square mySquareUpdate = new Square(mySquare.getX() - 1, mySquare.getY(), mySquare.getID(), mySquare.getColor());
+
+        squarePositions.put(mySquareId, mySquareUpdate);
+        this.mySquare = mySquareUpdate;    
+    }
+
+    public void right() {
+        // Find the square --> add one to x
+        Square mySquareUpdate = new Square(mySquare.getX() + 1, mySquare.getY(), mySquare.getID(), mySquare.getColor());
+
+        squarePositions.put(mySquareId, mySquareUpdate);
+        this.mySquare = mySquareUpdate;
+    }
 }
