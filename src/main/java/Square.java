@@ -2,11 +2,12 @@ public class Square {
     // Should have an x, y, color??
     private int x;
     private int y;
-    private String color;
+    private Color color;
 
-    public Square(int x, int y, String color) {
+    public Square(int x, int y, String id, Color color) {
         this.x = x;
         this.y = y;
+        this.id = id;
         this.color = color;
     }
 
@@ -30,7 +31,7 @@ public class Square {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(Color color) {
         this.color = color;
     }
 }
