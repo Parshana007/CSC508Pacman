@@ -13,16 +13,13 @@ import org.slf4j.LoggerFactory;
  */
 public class Blackboard extends PropertyChangeSupport{
     private static Blackboard instance;
-    private final PropertyChangeSupport propertyChangeSupport;
     private final Map<String, Square> squarePositions;
-    private String mySquareId;
     private Square mySquare;
     
     private static final Logger logger = LoggerFactory.getLogger(Blackboard.class);
 
     private Blackboard() {
-        super(new Object());  
-        this.propertyChangeSupport = new PropertyChangeSupport(this);
+        super(new Object());
         this.squarePositions = new HashMap<String, Square>();
     }
 
@@ -33,22 +30,6 @@ public class Blackboard extends PropertyChangeSupport{
         return instance;
     }
 
-    public void addObserver(PropertyChangeListener listener) {
-        this.propertyChangeSupport.addPropertyChangeListener(listener);
-    }
-
-    public void removeObserver(PropertyChangeListener listener) {
-        this.propertyChangeSupport.removePropertyChangeListener(listener);
-    }
-
-    public void setMySquareId(String squareId) {
-        this.mySquareId = squareId;
-    }
-
-    public String getMySquareId() {
-        return this.mySquareId;
-    }
-
     public void setMySquare(Square square) {
         this.mySquare = square;
     }
@@ -57,32 +38,12 @@ public class Blackboard extends PropertyChangeSupport{
         return this.mySquare;
     }
 
-    public Square getMyIDSquare() {
-        Square currentSquare = null;
-
-        for (Map.Entry<String,Square> entry : squarePositions.entrySet()) {
-            String key = entry.getKey();
-            if (key.equals(mySquareId)) {
-                currentSquare = (Square) entry.getValue();
-            }
-        }
-        return currentSquare;
-    }
-
-    public Square findSquare(Square square) {
-        Square existingSquare = getMyIDSquare();
-        if (existingSquare != null) {
-            return existingSquare;
-        }
-        return null;
-    }
-
 
     public Square addSquare(Square square) {
         squarePositions.put(square.getId(), square);
         this.mySquare = square;
         logger.info("square added");
-        propertyChangeSupport.firePropertyChange("addedSquare", "", squarePositions);
+        firePropertyChange("addedSquare", "", squarePositions);
         return square;
     }
 
@@ -91,34 +52,40 @@ public class Blackboard extends PropertyChangeSupport{
     }
 
     public void up() {
+        logger.info(squarePositions.toString());
         // Find the square --> subtract one to y
-        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() - 1, mySquare.getId(), mySquare.getColor());
+        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() - 20, mySquare.getId(), mySquare.getColor());
 
-        squarePositions.put(mySquareId, mySquareUpdate);
+        squarePositions.put(mySquare.getId(), mySquareUpdate);
         this.mySquare = mySquareUpdate;
+        firePropertyChange("squareMoved", null, mySquareUpdate);
+        logger.info(squarePositions.toString());
     }
 
     public void down() {
         // Find the square --> add one to y
-        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() + 1, mySquare.getId(), mySquare.getColor());
+        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() + 20, mySquare.getId(), mySquare.getColor());
 
-        squarePositions.put(mySquareId, mySquareUpdate);
-        this.mySquare = mySquareUpdate;    
+        squarePositions.put(mySquare.getId(), mySquareUpdate);
+        this.mySquare = mySquareUpdate;
+        firePropertyChange("squareMoved", null, mySquareUpdate);
     }
 
     public void left() {
         // Find the square --> subtract one to x
-        Square mySquareUpdate = new Square(mySquare.getX() - 1, mySquare.getY(), mySquare.getId(), mySquare.getColor());
+        Square mySquareUpdate = new Square(mySquare.getX() - 20, mySquare.getY(), mySquare.getId(), mySquare.getColor());
 
-        squarePositions.put(mySquareId, mySquareUpdate);
-        this.mySquare = mySquareUpdate;    
+        squarePositions.put(mySquare.getId(), mySquareUpdate);
+        this.mySquare = mySquareUpdate;
+        firePropertyChange("squareMoved", null, mySquareUpdate);
     }
 
     public void right() {
         // Find the square --> add one to x
-        Square mySquareUpdate = new Square(mySquare.getX() + 1, mySquare.getY(), mySquare.getId(), mySquare.getColor());
+        Square mySquareUpdate = new Square(mySquare.getX() + 20, mySquare.getY(), mySquare.getId(), mySquare.getColor());
 
-        squarePositions.put(mySquareId, mySquareUpdate);
+        squarePositions.put(mySquare.getId(), mySquareUpdate);
         this.mySquare = mySquareUpdate;
+        firePropertyChange("squareMoved", null, mySquareUpdate);
     }
 }

@@ -8,9 +8,8 @@ import java.beans.PropertyChangeListener;
 public class WorldPanel extends JPanel implements KeyListener, PropertyChangeListener {
     public WorldPanel() {
         setBackground(Color.WHITE);
-        setFocusable(true);      // needed for key events
-        requestFocusInWindow();  // request focus
         addKeyListener(this);
+        setFocusable(true);
     }
 
     @Override
@@ -38,11 +37,19 @@ public class WorldPanel extends JPanel implements KeyListener, PropertyChangeLis
 
     @Override
     public void propertyChange(PropertyChangeEvent e) {
-        repaint();
+        if (SwingUtilities.isEventDispatchThread()) {
+            repaint();
+        } else {
+            SwingUtilities.invokeLater(this::repaint);
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             Blackboard.getInstance().up();
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
@@ -53,9 +60,6 @@ public class WorldPanel extends JPanel implements KeyListener, PropertyChangeLis
             Blackboard.getInstance().right();
         }
     }
-
-    @Override
-    public void keyPressed(KeyEvent e) {}
 
     @Override
     public void keyTyped(KeyEvent e) {}
