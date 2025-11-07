@@ -57,12 +57,13 @@ public class MQTTSubscriber implements Runnable, MqttCallback {
 		System.out.println("Positions of Square arrived. Topic: " + s +
 			" Message: " + payload);
         
-		// payload ex: id,100,200,RED
+		//	payload ex: id,x,y,R,G,B
+		// payload ex: id,100,200,50,50,50
 
 		String[] squareDetails = payload.split(",");
 
 		// check if payload is correct length
-		if (squareDetails.length != 4) {
+		if (squareDetails.length != 6) {
 			System.err.println("Invalid payload format: " + payload);
 			return;
 		}
@@ -72,28 +73,24 @@ public class MQTTSubscriber implements Runnable, MqttCallback {
 			String id = squareDetails[0];
 			int x = Integer.parseInt(squareDetails[1]);
 			int y = Integer.parseInt(squareDetails[2]);
-			String colorName = squareDetails[3].trim();
+			int red = Integer.parseInt(squareDetails[3]);
+			int green = Integer.parseInt(squareDetails[4]);
+			int blue = Integer.parseInt(squareDetails[5]);
 
-			// try converting String colocName to Color object
-			Color color;
-			try {
-				color = (Color) Color.class.getField(colorName.toUpperCase()).get(null);
-			} catch (Exception e) {
-				System.err.println("Unknown color: " + colorName);
-				return;
-			}
+			// using received RGB to create Color object
+			Color color = new Color(red, green, blue);
 
 			Square square = new Square(x, y, id, color);
 			Blackboard.getInstance().addSquare(square);
 
 		}
 		catch (Exception e) {
-			System.err.println("Error parsing coordinates from payload: " + payload);
+			System.err.println("Error parsing payload: " + payload);
 		}
 	}
 
 
-	    @Override
+	@Override
     public void connectionLost(Throwable cause) {
     }
 
