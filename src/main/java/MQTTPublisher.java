@@ -17,7 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  */
 public class MQTTPublisher implements PropertyChangeListener{
     private final static String BROKER = "tcp://test.mosquitto.org:1883";
-	private final static String TOPIC = "csc509/multiverse/username/";
+	private final static String TOPIC = "csc509/multiverse/";
 	private final static String CLIENT_ID = "jgs-publisher";
 
 	private MqttClient client;
@@ -40,7 +40,7 @@ public class MQTTPublisher implements PropertyChangeListener{
 			MqttMessage message = new MqttMessage(content.getBytes());
 			message.setQos(2);
 			if (client.isConnected()) {
-				client.publish(TOPIC, message);
+				client.publish(TOPIC + Blackboard.getInstance().getMySquareId(), message);
 				System.out.println("Publisher sending message");
 			}
 

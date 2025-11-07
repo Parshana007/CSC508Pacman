@@ -10,7 +10,7 @@ import java.awt.Color;
  * @version 1.0
  */
 
-public class MQTTSubscriber implements Runnable, MqttCallback {
+public class MQTTSubscriber implements MqttCallback {
 
 	private final static String BROKER = "tcp://test.mosquitto.org:1883";
 	private final static String TOPIC = "csc509/multiverse/";
@@ -31,25 +31,6 @@ public class MQTTSubscriber implements Runnable, MqttCallback {
             }
         }
     }
-
-	@Override
-    public void run() {
-		MqttClient client = null;
-		try {
-			client = new MqttClient(BROKER, CLIENT_ID);
-			client.setCallback(new MQTTSubscriber());
-			client.connect();
-			System.out.println("Connected to BROKER: " + BROKER);
-			client.subscribe(TOPIC);
-			System.out.println("Subscribed to TOPIC: " + TOPIC);
-
-            while (running) {
-                Thread.sleep(1000);
-            }
-		} catch (MqttException | InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public void messageArrived(String s, MqttMessage mqttMessage) {

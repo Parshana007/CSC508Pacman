@@ -7,20 +7,25 @@ import java.beans.PropertyChangeListener;
 
 public class WorldPanel extends JPanel implements KeyListener, PropertyChangeListener {
     public WorldPanel() {
-        setBackground(Color.darkGray);
+        setBackground(Color.WHITE);
+        setFocusable(true);      // needed for key events
+        requestFocusInWindow();  // request focus
+        addKeyListener(this);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         drawGrid(g);
         drawSquares(g);
     }
 
     private void drawGrid(Graphics g) {
-        for (int y = 0; y < getHeight(); y++) {
+        int cellSize = 20;
+        for (int y = 0; y < getHeight(); y += cellSize) {
             g.drawLine(0, y, getWidth(), y);
         }
-        for (int x = 0; x < getWidth(); x++) {
+        for (int x = 0; x < getWidth(); x += cellSize) {
             g.drawLine(x, 0, x, getHeight());
         }
     }

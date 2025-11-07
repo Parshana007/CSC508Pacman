@@ -39,7 +39,7 @@ public class Square {
 
     public void draw(Graphics g) {
         g.setColor(color);
-        g.drawRect(x,y,1,1);
+        g.fillRect(x,y,20,20);
     }
 
     public String getId() {

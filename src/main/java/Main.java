@@ -8,21 +8,18 @@ public class Main extends JFrame {
         Blackboard.getInstance().addSquare(mySquare);
         Main m = new Main();
         m.setTitle("");
-        m.setSize(100, 200);
+        m.setSize(800, 600);
         m.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         m.setVisible(true);
         MQTTPublisher mp = new MQTTPublisher();
-        Thread t1 = new Thread(mp);
         Blackboard.getInstance().addPropertyChangeListener(mp);
-        t1.start();
         MQTTSubscriber ms = new MQTTSubscriber();
-        Thread t2 = new Thread(ms);
-        t2.start();
     }
 
     public Main() {
         setLayout(new GridLayout(1, 1));
         WorldPanel wp = new WorldPanel();
         add(wp);
+        Blackboard.getInstance().addPropertyChangeListener(wp);
     }
 }
