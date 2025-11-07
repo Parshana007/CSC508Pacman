@@ -1,4 +1,5 @@
 import org.eclipse.paho.client.mqttv3.*;
+import java.awt.Color;
 
 /**
  * This class is a simple MQTT subscriber that listens to a TOPIC.
@@ -10,42 +11,45 @@ import org.eclipse.paho.client.mqttv3.*;
  */
 
 public class MQTTSubscriber implements Runnable, MqttCallback {
-	
-	private final static String BROKER = "tcp://test.mosquitto.org:1883";
-	private final static String TOPIC = "csc509/multiverse/username/";
-	private final static String CLIENT_ID = "jgs-subscriber";
-	
-	// public static void main(String[] args) {
-	// 	try {
-	// 		MqttClient client = new MqttClient(BROKER, CLIENT_ID);
-	// 		client.setCallback(new MQTTSubscriber());
-	// 		client.connect();
-	// 		System.out.println("Connected to BROKER: " + BROKER);
-	// 		client.subscribe(TOPIC);
-	// 		System.out.println("Subscribed to TOPIC: " + TOPIC);
-	// 	} catch (MqttException e) {
-	// 		e.printStackTrace();
-	// 	}
-	// }
 
+	private final static String BROKER = "tcp://test.mosquitto.org:1883";
+	private final static String TOPIC = "csc509/multiverse/";
+	private final static String CLIENT_ID = "jgs-subscriber";
+
+	private volatile boolean running = true;
+	private MqttClient client;
+
+	public void stopSubscriber() {
+        running = false;
+        if (client != null && client.isConnected()) {
+            try {
+                client.disconnect();
+                System.out.println("Disconnected from MQTT broker.");
+            } catch (MqttException e) {
+				System.out.println("Error while disconnecting MQTTSubscriber");
+				e.printStackTrace();
+            }
+        }
+    }
 
 	@Override
     public void run() {
+		MqttClient client = null;
 		try {
-			MqttClient client = new MqttClient(BROKER, CLIENT_ID);
-			client.setCallback(new Subscriber());
+			client = new MqttClient(BROKER, CLIENT_ID);
+			client.setCallback(new MQTTSubscriber());
 			client.connect();
 			System.out.println("Connected to BROKER: " + BROKER);
 			client.subscribe(TOPIC);
 			System.out.println("Subscribed to TOPIC: " + TOPIC);
 
-            while (true) {
-                Thread.sleep(1000); // todo: ??
+            while (running) {
+                Thread.sleep(1000);
             }
-		} catch (MqttException e) {
+		} catch (MqttException | InterruptedException e) {
 			e.printStackTrace();
 		}
-    }
+	}
 
 	@Override
 	public void messageArrived(String s, MqttMessage mqttMessage) {
@@ -87,3 +91,13 @@ public class MQTTSubscriber implements Runnable, MqttCallback {
 			System.err.println("Error parsing coordinates from payload: " + payload);
 		}
 	}
+
+
+	    @Override
+    public void connectionLost(Throwable cause) {
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken token) {
+    }
+}
