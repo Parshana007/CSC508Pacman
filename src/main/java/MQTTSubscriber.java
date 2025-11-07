@@ -27,16 +27,47 @@ public class MQTTSubscriber implements Runnable, MqttCallback {
 			e.printStackTrace();
 		}
 	}
+
+
+	@Override
+    public void run() {
+		try {
+			MqttClient client = new MqttClient(BROKER, CLIENT_ID);
+			Subscriber subscriber = new Subscriber();
+			client.setCallback(subscriber);
+			client.connect();
+			System.out.println("Connected to BROKER: " + BROKER);
+			client.subscribe(TOPIC);
+			System.out.println("Subscribed to TOPIC: " + TOPIC);
+
+            while (true) {
+                Thread.sleep(1000); // todo: ??
+            }
+		} catch (MqttException e) {
+			e.printStackTrace();
+		}
+    }
+
+	  // todo: ??
+    public static void main(String[] args) {
+        new Thread(new MQTTSubscriber()).start();
+    }
+	
 	
 	// @Override
 	// public void connectionLost(Throwable throwable) {
 	// 	System.out.println("Connection lost: " + throwable.getMessage());
 	// }
 	
-	@Override
+
+		@Override
 	public void messageArrived(String s, MqttMessage mqttMessage) {
+        String payload = new String(mqttMessage.getPayload());
 		System.out.println("Positions of Squares arrived. Topic: " + s +
-			" Message: " + new String(mqttMessage.getPayload()));
+			" Message: " + payload);
+
+        // Update the shared game state (Blackboard)
+        Blackboard.getInstance().updateSquarePositions(payload);
 	}
 	
 	// @Override
