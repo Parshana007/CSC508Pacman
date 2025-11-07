@@ -14,12 +14,25 @@ public class MQTTSubscriber implements MqttCallback {
 
 	private final static String BROKER = "tcp://test.mosquitto.org:1883";
 	private final static String TOPIC = "csc509/multiverse/";
-	private final static String CLIENT_ID = "jgs-subscriber";
+	private final static String CLIENT_ID = "jgs-subscriber-" + System.currentTimeMillis();;
 
 	private volatile boolean running = true;
 	private MqttClient client;
 
-	public void stopSubscriber() {
+    public void start() {
+        try {
+            client = new MqttClient(BROKER, CLIENT_ID + "-" + System.currentTimeMillis());
+            client.setCallback(this);
+            client.connect();
+            client.subscribe(TOPIC);
+            System.out.println("Subscriber connected and listening to " + TOPIC + "#");
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void stopSubscriber() {
         running = false;
         if (client != null && client.isConnected()) {
             try {

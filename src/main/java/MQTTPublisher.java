@@ -18,9 +18,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class MQTTPublisher implements PropertyChangeListener{
     private final static String BROKER = "tcp://test.mosquitto.org:1883";
 	private final static String TOPIC = "csc509/multiverse/";
-	private final static String CLIENT_ID = "jgs-publisher";
+    private final static String CLIENT_ID = "jgs-subscriber-" + System.currentTimeMillis();;
 
-	private MqttClient client;
+
+    private MqttClient client;
 
 	public MQTTPublisher() {
 		try {

@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class Main extends JFrame {
     public static void main(String[] args) {
-        String id = args.length > 0 ? args[0] : "default";
+        String id = args.length > 0 ? args[0] : "default" + System.currentTimeMillis();
         Square mySquare = new Square(400, 300, id, Color.GREEN);
         Blackboard.getInstance().addSquare(mySquare);
         Main m = new Main();
@@ -13,7 +13,11 @@ public class Main extends JFrame {
         m.setVisible(true);
         MQTTPublisher mp = new MQTTPublisher();
         Blackboard.getInstance().addPropertyChangeListener(mp);
-        MQTTSubscriber ms = new MQTTSubscriber();
+//        MQTTSubscriber ms = new MQTTSubscriber();
+        new Thread(() -> {
+            MQTTSubscriber sub = new MQTTSubscriber();
+            sub.start();
+        }).start();
     }
 
     public Main() {
