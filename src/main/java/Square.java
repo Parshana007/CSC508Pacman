@@ -1,8 +1,10 @@
+import java.awt.*;
+
 public class Square {
-    // Should have an x, y, color??
     private int x;
     private int y;
     private Color color;
+    private String id;
 
     public Square(int x, int y, String id, Color color) {
         this.x = x;
@@ -27,11 +29,19 @@ public class Square {
         this.y = y;
     }
 
-    public String getColor() {
+    public Color getColor() {
         return color;
     }
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
