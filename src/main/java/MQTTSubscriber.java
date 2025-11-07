@@ -8,7 +8,7 @@ import org.eclipse.paho.client.mqttv3.*;
  * @author javiergs
  * @version 1.0
  */
-public class MQTTSubscriber implements MqttCallback {
+public class MQTTSubscriber implements Runnable, MqttCallback {
 	
 	private final static String BROKER = "tcp://test.mosquitto.org:1883";
 	private final static String TOPIC = "csc509/multiverse/username/";

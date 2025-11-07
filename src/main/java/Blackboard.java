@@ -51,4 +51,11 @@ public class Blackboard extends PropertyChangeSupport{
         return new ArrayList<>(squarePositions);
     }
 
+    public void up() {}
+
+    public void down() {}
+
+    public void left() {}
+
+    public void right() {}
 }
