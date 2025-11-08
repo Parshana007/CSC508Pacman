@@ -16,7 +16,6 @@ public class MQTTSubscriber implements MqttCallback {
 	private final static String TOPIC = "csc509/multiverse/";
 	private final static String CLIENT_ID = "jgs-subscriber-" + System.currentTimeMillis();
 
-	private volatile boolean running = true;
 	private MqttClient client;
 
     public void start() {
@@ -28,20 +27,6 @@ public class MQTTSubscriber implements MqttCallback {
             System.out.println("Subscriber connected and listening to " + TOPIC + "#");
         } catch (MqttException e) {
             e.printStackTrace();
-        }
-    }
-
-
-    public void stopSubscriber() {
-        running = false;
-        if (client != null && client.isConnected()) {
-            try {
-                client.disconnect();
-                System.out.println("Disconnected from MQTT broker.");
-            } catch (MqttException e) {
-				System.out.println("Error while disconnecting MQTTSubscriber");
-				e.printStackTrace();
-            }
         }
     }
 
