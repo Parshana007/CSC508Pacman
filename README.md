@@ -7,30 +7,30 @@ csc509/multiverse/id/. The user subscribes to receive all messages (square locat
 csc509/multiverse/.
 
 ## Running the Application
-### 1. Build
-Clone the repository and build with Maven:
+### 1. Clone
+Clone the repository:
 
 ```bash
 git clone https://github.com/Parshana007/CSC508Pacman.git
 ```
 ### 2. Run
 Each instance represents a player/square.
-There are two methods to run the program:
 
+There are two methods to run the program:
+1. If you start the program without an argument/with the below command, it will create a unique default ID by appending the current time in milliseconds (Ex default1390494)
 ```bash
 mvn exec:java -Dexec.mainClass="Main"
 mvn exec:java -Dexec.mainClass="Main"
 ...
 ```
-If you start the program without an argument/with the above command, it will create a unique default ID by appending the current time in milliseconds (Ex default1390494)
+
+2. If you start the program with an argument/with the below command, it will use that as the player/square’s ID,
 
 ```bash
 mvn exec:java -Dexec.mainClass="Main" -Dexec.args="player1"
 mvn exec:java -Dexec.mainClass="Main" -Dexec.args="player2"
 ...
 ```
-If you start the program with an argument/with the above command, it will use that as the player/square’s ID,
-
 
 ## Controls
 
@@ -53,4 +53,5 @@ If you start the program with an argument/with the above command, it will use th
 | `MQTTSubscriber.java` | MQTT subscriber that listens to a TOPIC. The BROKER is test.mosquitto.org and the TOPIC is csc509/multiverse/                          |
 
 ## GUI 
-![Screenshot 2025-11-07 at 4.55.51 PM.png](../Screenshot%202025-11-07%20at%204.55.51%E2%80%AFPM.png)
+<img width="1506" height="889" alt="Screenshot 2025-11-07 at 4 55 51 PM" src="https://github.com/user-attachments/assets/7f7253f7-1313-46fc-ab3f-ea461b0cc50e" />
+
