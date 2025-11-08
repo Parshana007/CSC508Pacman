@@ -6,6 +6,7 @@ import java.beans.PropertyChangeEvent;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 /**
  * This class is a simple MQTT publisher that sends messages to a TOPIC.
@@ -25,7 +26,8 @@ public class MQTTPublisher implements PropertyChangeListener{
 
 	public MQTTPublisher() {
 		try {
-			client = new MqttClient(BROKER, CLIENT_ID);
+            client = new MqttClient(BROKER, CLIENT_ID, new MemoryPersistence());
+            client.connect();
 		} catch (MqttException e) {
 			e.printStackTrace();
 		}

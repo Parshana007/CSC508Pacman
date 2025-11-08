@@ -13,7 +13,6 @@ public class Main extends JFrame {
         m.setVisible(true);
         MQTTPublisher mp = new MQTTPublisher();
         Blackboard.getInstance().addPropertyChangeListener(mp);
-//        MQTTSubscriber ms = new MQTTSubscriber();
         new Thread(() -> {
             MQTTSubscriber sub = new MQTTSubscriber();
             sub.start();

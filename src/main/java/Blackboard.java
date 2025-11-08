@@ -20,7 +20,7 @@ public class Blackboard extends PropertyChangeSupport{
 
     private Blackboard() {
         super(new Object());
-        this.squarePositions = new HashMap<String, Square>();
+        this.squarePositions = new HashMap<>();
     }
 
     public static synchronized Blackboard getInstance() {
@@ -30,21 +30,21 @@ public class Blackboard extends PropertyChangeSupport{
         return instance;
     }
 
-    public void setMySquare(Square square) {
-        this.mySquare = square;
-    }
-
     public Square getMySquare() {
         return this.mySquare;
     }
 
 
-    public Square addSquare(Square square) {
+    public void addSquare(Square square) {
+        Square existing = squarePositions.get(square.getId());
         squarePositions.put(square.getId(), square);
-        this.mySquare = square;
-        logger.info("square added");
-        firePropertyChange("addedSquare", "", squarePositions);
-        return square;
+        if (this.mySquare == null || square.getId().equals(this.mySquare.getId())) {
+            this.mySquare = square;
+        }
+        if (existing == null || !existing.equals(square)) {
+            logger.info("square added");
+            firePropertyChange("addedSquare", null, squarePositions);
+        }
     }
 
     public synchronized Map<String, Square> getSquarePositions() {
@@ -52,40 +52,38 @@ public class Blackboard extends PropertyChangeSupport{
     }
 
     public void up() {
-        logger.info(squarePositions.toString());
         // Find the square --> subtract one to y
-        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() - 20, mySquare.getId(), mySquare.getColor());
+        mySquare.setY(mySquare.getY() - 20);
+        squarePositions.put(mySquare.getId(), mySquare);
 
-        squarePositions.put(mySquare.getId(), mySquareUpdate);
-        this.mySquare = mySquareUpdate;
-        firePropertyChange("squareMoved", null, mySquareUpdate);
+        firePropertyChange("squareMoved", null, mySquare);
         logger.info(squarePositions.toString());
     }
 
     public void down() {
         // Find the square --> add one to y
-        Square mySquareUpdate = new Square(mySquare.getX(), mySquare.getY() + 20, mySquare.getId(), mySquare.getColor());
+        mySquare.setY(mySquare.getY() + 20);
+        squarePositions.put(mySquare.getId(), mySquare);
 
-        squarePositions.put(mySquare.getId(), mySquareUpdate);
-        this.mySquare = mySquareUpdate;
-        firePropertyChange("squareMoved", null, mySquareUpdate);
+        firePropertyChange("squareMoved", null, mySquare);
+        logger.info(squarePositions.toString());
     }
 
     public void left() {
         // Find the square --> subtract one to x
-        Square mySquareUpdate = new Square(mySquare.getX() - 20, mySquare.getY(), mySquare.getId(), mySquare.getColor());
+        mySquare.setX(mySquare.getX() - 20);
+        squarePositions.put(mySquare.getId(), mySquare);
 
-        squarePositions.put(mySquare.getId(), mySquareUpdate);
-        this.mySquare = mySquareUpdate;
-        firePropertyChange("squareMoved", null, mySquareUpdate);
+        firePropertyChange("squareMoved", null, mySquare);
+        logger.info(squarePositions.toString());
     }
 
     public void right() {
         // Find the square --> add one to x
-        Square mySquareUpdate = new Square(mySquare.getX() + 20, mySquare.getY(), mySquare.getId(), mySquare.getColor());
+        mySquare.setX(mySquare.getX() + 20);
+        squarePositions.put(mySquare.getId(), mySquare);
 
-        squarePositions.put(mySquare.getId(), mySquareUpdate);
-        this.mySquare = mySquareUpdate;
-        firePropertyChange("squareMoved", null, mySquareUpdate);
+        firePropertyChange("squareMoved", null, mySquare);
+        logger.info(squarePositions.toString());
     }
 }

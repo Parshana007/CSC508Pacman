@@ -1,5 +1,8 @@
 import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
 import java.awt.Color;
+import java.util.Map;
 
 /**
  * This class is a simple MQTT subscriber that listens to a TOPIC.
@@ -14,17 +17,17 @@ public class MQTTSubscriber implements MqttCallback {
 
 	private final static String BROKER = "tcp://test.mosquitto.org:1883";
 	private final static String TOPIC = "csc509/multiverse/";
-	private final static String CLIENT_ID = "jgs-subscriber-" + System.currentTimeMillis();;
+	private final static String CLIENT_ID = "jgs-subscriber-" + System.currentTimeMillis();
 
 	private volatile boolean running = true;
 	private MqttClient client;
 
     public void start() {
         try {
-            client = new MqttClient(BROKER, CLIENT_ID + "-" + System.currentTimeMillis());
+            client = new MqttClient(BROKER, CLIENT_ID, new MemoryPersistence());
             client.setCallback(this);
             client.connect();
-            client.subscribe(TOPIC);
+            client.subscribe(TOPIC + "#");
             System.out.println("Subscriber connected and listening to " + TOPIC + "#");
         } catch (MqttException e) {
             e.printStackTrace();
@@ -65,6 +68,13 @@ public class MQTTSubscriber implements MqttCallback {
 		// try adding new payload to Blackboard
 		try {
 			String id = squareDetails[0];
+
+            // Ignore messages from yourself
+            Square mySquare = Blackboard.getInstance().getMySquare();
+            if (mySquare != null && id.equals(mySquare.getId())) {
+                return;
+            }
+
 			int x = Integer.parseInt(squareDetails[1]);
 			int y = Integer.parseInt(squareDetails[2]);
 			int red = Integer.parseInt(squareDetails[3]);
@@ -74,9 +84,19 @@ public class MQTTSubscriber implements MqttCallback {
 			// using received RGB to create Color object
 			Color color = new Color(red, green, blue);
 
-			Square square = new Square(x, y, id, color);
-			Blackboard.getInstance().addSquare(square);
+            Map<String, Square> squares = Blackboard.getInstance().getSquarePositions();
+            Square existing = squares.get(id);
 
+            if (existing != null) {
+                existing.setX(x);
+                existing.setY(y);
+                existing.setColor(color);
+            } else {
+                Square newSquare = new Square(x, y, id, color);
+                Blackboard.getInstance().addSquare(newSquare);
+            }
+
+            Blackboard.getInstance().firePropertyChange("squareMoved", null, squares);
 		}
 		catch (Exception e) {
 			System.err.println("Error parsing payload: " + payload);
