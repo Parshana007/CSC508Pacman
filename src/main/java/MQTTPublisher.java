@@ -1,5 +1,3 @@
-
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
@@ -9,11 +7,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 /**
- * This class is a simple MQTT publisher that sends messages to a TOPIC.
- * The broker is test.mosquitto.org and the TOPIC is cal-poly/csc/309.
- * (run this and the subscriber at the same time)
+ * MQTT publisher that sends messages to a TOPIC.
+ * The broker is test.mosquitto.org and the TOPIC is csc509/multiverse/
  *
- * @author ..
  * @version 1.0
  */
 public class MQTTPublisher implements PropertyChangeListener{

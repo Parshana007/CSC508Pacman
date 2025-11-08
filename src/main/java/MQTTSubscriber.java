@@ -5,14 +5,11 @@ import java.awt.Color;
 import java.util.Map;
 
 /**
- * This class is a simple MQTT subscriber that listens to a TOPIC.
- * The BROKER is test.mosquitto.org and the TOPIC is cal-poly/csc/309.
- * (run this and the publisher at the same time)
+ * MQTT subscriber that listens to a TOPIC.
+ * The BROKER is test.mosquitto.org and the TOPIC is csc509/multiverse/
  *
- * @author javiergs
  * @version 1.0
  */
-
 public class MQTTSubscriber implements MqttCallback {
 
 	private final static String BROKER = "tcp://test.mosquitto.org:1883";
@@ -53,9 +50,6 @@ public class MQTTSubscriber implements MqttCallback {
         String payload = new String(mqttMessage.getPayload());
 		System.out.println("Positions of Square arrived. Topic: " + s +
 			" Message: " + payload);
-        
-		//	payload ex: id,x,y,R,G,B
-		// payload ex: id,100,200,50,50,50
 
 		String[] squareDetails = payload.split(",");
 

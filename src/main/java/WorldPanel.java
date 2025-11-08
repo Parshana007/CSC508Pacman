@@ -5,6 +5,12 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+/**
+ * WorldPanel handles the drawing of squares, updating the square states,
+ * and manages key events (up, down, left, right) of a given square.
+ *
+ * @version 1.0
+ */
 public class WorldPanel extends JPanel implements KeyListener, PropertyChangeListener {
     public WorldPanel() {
         setBackground(Color.WHITE);

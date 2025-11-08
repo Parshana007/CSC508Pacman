@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * Blackboard is a singleton that holds the states of all squares in the game.
+ *
+ * @version 1.0
  */
 public class Blackboard extends PropertyChangeSupport{
     private static Blackboard instance;

@@ -1,10 +1,21 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
+/**
+ * Main application to run the square game.
+ *
+ * @version 1.0
+ */
 public class Main extends JFrame {
     public static void main(String[] args) {
         String id = args.length > 0 ? args[0] : "default" + System.currentTimeMillis();
-        Square mySquare = new Square(400, 300, id, Color.GREEN);
+        Random random = new Random();
+        int red = random.nextInt(256);
+        int green = random.nextInt(256);
+        int blue = random.nextInt(256);
+
+        Square mySquare = new Square(400, 300, id, new Color(red, green, blue));
         Blackboard.getInstance().addSquare(mySquare);
         Main m = new Main();
         m.setTitle("");

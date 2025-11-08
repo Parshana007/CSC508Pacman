@@ -1,5 +1,10 @@
 import java.awt.*;
 
+/**
+ * A square in a grid with a unique id, location, and color.
+ *
+ * @version 1.0
+ */
 public class Square {
     private int x;
     private int y;
