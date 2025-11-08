@@ -1,4 +1,5 @@
 # CSC508Pacman
+# Names: Parshana Sekhon, Mio Nakagawa, Sadie Fisher
 
 ## MQTT-Based Multi-User Pac-Man
 Creates a Java Desktop Application that allows users to move a colored square using their keyboard and displays other players' squares. 
