@@ -11,22 +11,55 @@ import java.util.Map;
  * @version 1.0
  */
 public class MQTTSubscriber implements MqttCallback {
-
-	private final static String BROKER = "tcp://test.mosquitto.org:1883";
-	private final static String TOPIC = "csc509/multiverse/";
+    private String broker = "tcp://test.mosquitto.org:1883";
+    private String topic = "csc509/multiverse/";
 	private final static String CLIENT_ID = "jgs-subscriber-" + System.currentTimeMillis();
 
 	private MqttClient client;
 
+    public MQTTSubscriber(String broker, String topic) {
+        this.broker = broker;
+        this.topic = topic;
+    }
+
     public void start() {
         try {
-            client = new MqttClient(BROKER, CLIENT_ID, new MemoryPersistence());
+            if (client != null && client.isConnected()) {
+                client.disconnect();
+            }
+
+            client = new MqttClient(broker, CLIENT_ID, new MemoryPersistence());
             client.setCallback(this);
             client.connect();
-            client.subscribe(TOPIC + "#");
-            System.out.println("Subscriber connected and listening to " + TOPIC + "#");
+            client.subscribe(topic + "#");
+            System.out.println("Subscriber connected and listening to " + topic + "#");
         } catch (MqttException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void setBroker(String newBroker) {
+        if (!this.broker.equals(newBroker)) {
+            this.broker = newBroker;
+            System.out.println("Changing subscriber broker to " + newBroker);
+            start();
+        }
+    }
+
+    public void setTopic(String newTopic) {
+        if (!this.topic.equals(newTopic)) {
+            this.topic = newTopic;
+            System.out.println("Changing subscriber topic to " + newTopic);
+            try {
+                if (client != null && client.isConnected()) {
+                    client.unsubscribe("#");
+                    client.subscribe(topic + "#");
+                } else {
+                    start();
+                }
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
         }
     }
 

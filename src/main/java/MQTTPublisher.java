@@ -13,21 +13,38 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
  * @version 1.0
  */
 public class MQTTPublisher implements PropertyChangeListener{
-    private final static String BROKER = "tcp://test.mosquitto.org:1883";
-	private final static String TOPIC = "csc509/multiverse/";
+    private String broker = "tcp://test.mosquitto.org:1883";
+	private String topic = "csc509/multiverse/";
     private final static String CLIENT_ID = "jgs-subscriber-" + System.currentTimeMillis();;
 
 
     private MqttClient client;
 
-	public MQTTPublisher() {
-		try {
-            client = new MqttClient(BROKER, CLIENT_ID, new MemoryPersistence());
-            client.connect();
-		} catch (MqttException e) {
-			e.printStackTrace();
-		}
+	public MQTTPublisher(String broker, String topic) {
+		this.broker = broker;
+        this.topic = topic;
+        connectClient();
 	}
+
+    public void setBroker(String broker) {
+        if (!this.broker.equals(broker)) {
+            this.broker = broker;
+            connectClient();
+        }
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public void connectClient() {
+        try {
+            client = new MqttClient(broker, CLIENT_ID, new MemoryPersistence());
+            client.connect();
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -39,7 +56,7 @@ public class MQTTPublisher implements PropertyChangeListener{
 			MqttMessage message = new MqttMessage(content.getBytes());
 			message.setQos(2);
 			if (client.isConnected()) {
-				client.publish(TOPIC + Blackboard.getInstance().getMySquare().getId(), message);
+				client.publish(topic + Blackboard.getInstance().getMySquare().getId(), message);
 				System.out.println("Publisher sending message");
 			}
 

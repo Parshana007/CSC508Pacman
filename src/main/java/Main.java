@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -22,18 +23,57 @@ public class Main extends JFrame {
         m.setSize(800, 600);
         m.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         m.setVisible(true);
-        MQTTPublisher mp = new MQTTPublisher();
-        Blackboard.getInstance().addPropertyChangeListener(mp);
-        new Thread(() -> {
-            MQTTSubscriber sub = new MQTTSubscriber();
-            sub.start();
-        }).start();
     }
 
     public Main() {
-        setLayout(new GridLayout(1, 1));
+        setLayout(new BorderLayout());
         WorldPanel wp = new WorldPanel();
-        add(wp);
+        add(wp, BorderLayout.CENTER);
+
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+
+        JPanel brokerDropdownPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        String[] brokerOptions = {"tcp://test.mosquitto.org:1883", "tcp://broker.hivemq.com:1883"};
+        JComboBox<String> brokerDropdownMenu = new JComboBox<>(brokerOptions);
+        brokerDropdownPanel.add(new JLabel("Broker:"));
+        brokerDropdownPanel.add(brokerDropdownMenu);
+
+        JPanel topicDropdownPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        String[] topicOptions = {"calpoly/csc509/multiverse/", "calpoly/csc509/personal/"};
+        JComboBox<String> topicDropdownMenu = new JComboBox<>(topicOptions);
+        topicDropdownPanel.add(new JLabel("Topic:"));
+        topicDropdownPanel.add(topicDropdownMenu);
+
+        topPanel.add(brokerDropdownPanel);
+        topPanel.add(topicDropdownPanel);
+
+        add(topPanel, BorderLayout.NORTH);
+
+        MQTTPublisher mp = new MQTTPublisher(
+                Objects.requireNonNull(brokerDropdownMenu.getSelectedItem()).toString(),
+                Objects.requireNonNull(topicDropdownMenu.getSelectedItem()).toString());
+
+        Blackboard.getInstance().addPropertyChangeListener(mp);
+
+        MQTTSubscriber sub = new MQTTSubscriber(
+                Objects.requireNonNull(brokerDropdownMenu.getSelectedItem()).toString(),
+                Objects.requireNonNull(topicDropdownMenu.getSelectedItem()).toString());
+
+        brokerDropdownMenu.addActionListener(e -> {
+                    String newBroker = (String) brokerDropdownMenu.getSelectedItem();
+                    mp.setBroker(newBroker);
+                    sub.setBroker(newBroker);
+                }
+        );
+
+        topicDropdownMenu.addActionListener(e -> {
+                    String newBroker = (String) topicDropdownMenu.getSelectedItem();
+                    mp.setTopic(newBroker);
+                    sub.setTopic(newBroker);
+                }
+        );
+
         Blackboard.getInstance().addPropertyChangeListener(wp);
         SwingUtilities.invokeLater(wp::requestFocusInWindow);
     }
