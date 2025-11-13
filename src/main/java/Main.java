@@ -45,8 +45,11 @@ public class Main extends JFrame {
         topicDropdownPanel.add(new JLabel("Topic:"));
         topicDropdownPanel.add(topicDropdownMenu);
 
+//        JButton chooseButton = new JButton("Choose Square Color");
+
         topPanel.add(brokerDropdownPanel);
         topPanel.add(topicDropdownPanel);
+//        topPanel.add(chooseButton);
 
         add(topPanel, BorderLayout.NORTH);
 
@@ -73,6 +76,13 @@ public class Main extends JFrame {
                     sub.setTopic(newBroker);
                 }
         );
+
+//        chooseButton.addActionListener(e -> {
+//            Color chosenColor = JColorChooser.showDialog(new JPanel(), "Choose Square Color", Color.BLACK);
+//            if(chosenColor != null){
+//                Blackboard.getInstance().getMySquare().setColor(chosenColor);
+//            }
+//        });
 
         Blackboard.getInstance().addPropertyChangeListener(wp);
         SwingUtilities.invokeLater(wp::requestFocusInWindow);

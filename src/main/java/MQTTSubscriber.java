@@ -11,8 +11,8 @@ import java.util.Map;
  * @version 1.0
  */
 public class MQTTSubscriber implements MqttCallback {
-    private String broker = "tcp://test.mosquitto.org:1883";
-    private String topic = "csc509/multiverse/";
+    private String broker;
+    private String topic;
 	private final static String CLIENT_ID = "jgs-subscriber-" + System.currentTimeMillis();
 
 	private MqttClient client;
