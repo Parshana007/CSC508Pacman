@@ -17,7 +17,7 @@ public class Blackboard extends PropertyChangeSupport{
     private static Blackboard instance;
     private final Map<String, Square> squarePositions;
     private Square mySquare;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(Blackboard.class);
 
     private Blackboard() {
