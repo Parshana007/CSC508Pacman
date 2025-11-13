@@ -23,18 +23,20 @@ public class MQTTPublisher implements PropertyChangeListener{
 	public MQTTPublisher(String broker, String topic) {
 		this.broker = broker;
         this.topic = topic;
-        connectClient();
+        new Thread(this::connectClient).start();
 	}
 
     public void setBroker(String broker) {
         if (!this.broker.equals(broker)) {
             this.broker = broker;
             connectClient();
+            System.out.println("Broker set to " + broker);
         }
     }
 
     public void setTopic(String topic) {
         this.topic = topic;
+        System.out.println("Topic set to " + topic);
     }
 
     public void connectClient() {

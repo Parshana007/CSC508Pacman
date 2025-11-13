@@ -40,7 +40,7 @@ public class Main extends JFrame {
         brokerDropdownPanel.add(brokerDropdownMenu);
 
         JPanel topicDropdownPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        String[] topicOptions = {"calpoly/csc509/multiverse/", "calpoly/csc509/personal/"};
+        String[] topicOptions = {"calpoly/csc509/personal/", "calpoly/csc509/multiverse/"};
         JComboBox<String> topicDropdownMenu = new JComboBox<>(topicOptions);
         topicDropdownPanel.add(new JLabel("Topic:"));
         topicDropdownPanel.add(topicDropdownMenu);
@@ -74,6 +74,7 @@ public class Main extends JFrame {
                 }
         );
 
+        new Thread(sub::start).start();
         Blackboard.getInstance().addPropertyChangeListener(wp);
         SwingUtilities.invokeLater(wp::requestFocusInWindow);
     }
