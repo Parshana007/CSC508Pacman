@@ -13,19 +13,26 @@ import java.util.Map;
 public class MQTTSubscriber implements MqttCallback {
 
 //    private final static String BROKER = "tcp://test.mosquitto.org:1883";
-    private final static String BROKER = "tcp://broker.hivemq.com:1883";
-    private final static String TOPIC = "csc509/multiverse/";
+//    private final static String BROKER = "tcp://broker.hivemq.com:1883";
+//    private final static String TOPIC = "csc509/multiverse/";
+    private final String BROKER;
+    private final String TOPIC;
     private final static String CLIENT_ID = "jgs-subscriber-" + System.currentTimeMillis();
 
     private MqttClient client;
 
+    public MQTTSubscriber(String broker, String topic) {
+        this.BROKER = broker;
+        this.TOPIC = topic.endsWith("/") ? topic : topic + "/";
+    }
+
     public void start() {
         try {
-            client = new MqttClient(BROKER, CLIENT_ID, new MemoryPersistence());
+            client = new MqttClient(this.BROKER, CLIENT_ID, new MemoryPersistence());
             client.setCallback(this);
             client.connect();
-            client.subscribe(TOPIC + "#");
-            System.out.println("Subscriber connected and listening to " + TOPIC + "#");
+            client.subscribe(this.TOPIC + "#");
+            System.out.println("Subscriber connected and listening to " + this.TOPIC + "#");
         } catch (MqttException e) {
             e.printStackTrace();
         }

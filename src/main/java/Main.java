@@ -10,22 +10,36 @@ import java.util.Random;
 public class Main extends JFrame {
     public static void main(String[] args) {
         String id = args.length > 0 ? args[0] : "default" + System.currentTimeMillis();
-        Random random = new Random();
-        int red = random.nextInt(256);
-        int green = random.nextInt(256);
-        int blue = random.nextInt(256);
 
-        Square mySquare = new Square(400, 300, id, new Color(red, green, blue));
+        Color squareColor = JColorChooser.showDialog(null, "Choose your square color", Color.BLUE);
+        if (squareColor == null) {
+            Random random = new Random();
+            squareColor = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+        }
+
+        String broker = JOptionPane.showInputDialog("Enter broker URL:", "tcp://broker.hivemq.com:1883");
+        if (broker == null || broker.isEmpty()) {
+            broker = "tcp://broker.hivemq.com:1883";
+        }
+
+        String topic = JOptionPane.showInputDialog("Enter topic:", "calpoly/csc508/brokerverse");
+        if (topic == null || topic.isEmpty()) {
+            topic = "calpoly/csc508/brokerverse";
+        }
+
+        Square mySquare = new Square(400, 300, id, new Color(squareColor.getRed(), squareColor.getGreen(), squareColor.getBlue()));
         Blackboard.getInstance().addSquare(mySquare);
         Main m = new Main();
         m.setTitle("");
         m.setSize(800, 600);
         m.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         m.setVisible(true);
-        MQTTPublisher mp = new MQTTPublisher();
+        MQTTPublisher mp = new MQTTPublisher(broker, topic);
         Blackboard.getInstance().addPropertyChangeListener(mp);
+        final String fBroker = broker;
+        final String fTopic = topic;
         new Thread(() -> {
-            MQTTSubscriber sub = new MQTTSubscriber();
+            MQTTSubscriber sub = new MQTTSubscriber(fBroker, fTopic);
             sub.start();
         }).start();
     }
